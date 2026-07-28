@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Travel Tracker</title>
+<meta name="app-build" content="20260728-17">
+<meta name="theme-color" content="#1E3A8A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ CONFIG SECTION - Change per customer ============ */
+:root{
+  --company-name: "GNS CABS";
+  --primary: #1E3A8A;
+  --primary-light: #2E4FB5;
+  --accent: #FF9F1C;
+  --success: #06A77D;
+  --danger: #E63946;
+  --bg: #F7F9FC;
+  --surface: #FFFFFF;
+  --text: #1A1D29;
+  --muted: #1A1D29;
+  --border: #E5E9F0;
+}
+/* ================================================================ */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;}
+h1,h2,h3,.heading{font-family:'Poppins',sans-serif;}
+#app{max-width:600px;margin:0 auto;min-height:100vh;padding-bottom:80px;}
+
+header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;padding:20px 18px 16px;position:sticky;top:0;z-index:20;
+  box-shadow:0 4px 14px rgba(30,58,138,0.25);
+}
+header .top-row{display:flex;justify-content:space-between;align-items:center;}
+header h1{font-size:19px;margin:0;font-weight:700;letter-spacing:0.3px;}
+header .sub{font-size:12px;opacity:0.85;margin-top:2px;}
+header button.icon-btn{background:rgba(255,255,255,0.15);border:none;color:#fff;width:38px;height:38px;border-radius:10px;font-size:16px;}
+
+nav.tabs{
+  display:flex;background:var(--surface);border-bottom:1px solid var(--border);
+  position:sticky;top:70px;z-index:19;overflow-x:auto;
+}
+nav.tabs button{
+  flex:1;min-width:80px;padding:13px 8px;background:none;border:none;font-size:12.5px;font-weight:600;
+  color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;font-family:'Inter';
+}
+nav.tabs button.active{color:var(--primary);border-bottom-color:var(--accent);}
+
+main{padding:16px;}
+.hidden{display:none !important;}
+
+/* Cards */
+.card{background:var(--surface);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid var(--border);}
+.card-title{font-size:15px;font-weight:700;margin:0 0 12px;display:flex;justify-content:space-between;align-items:center;}
+
+/* Summary stat grid */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.stat-box{background:var(--surface);border-radius:14px;padding:14px;border:1px solid var(--border);text-align:center;}
+.stat-box .val{font-size:20px;font-weight:800;font-family:'Poppins';}
+.stat-box .lbl{font-size:11px;color:var(--muted);margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;}
+.stat-box.income .val{color:var(--success);}
+.stat-box.expense .val{color:var(--danger);}
+.stat-box.profit .val{color:var(--primary);}
+.stat-box.km .val{color:var(--accent);}
+
+/* Vehicle / Driver chips with full CRUD */
+.chip-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.chip{
+  background:#EEF2FF;color:var(--primary);border-radius:20px;padding:8px 14px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:8px;border:1px solid #D6DEFF;
+}
+.chip button{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0;}
+.chip button.del-x{color:var(--danger);}
+.add-chip-btn{
+  background:none;border:2px dashed var(--border);color:var(--muted);border-radius:20px;padding:8px 16px;
+  font-size:13px;font-weight:600;
+}
+
+/* Entry list rows */
+.entry-row{
+  background:var(--surface);border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid var(--border);
+  border-left:4px solid var(--accent);
+}
+.entry-row .er-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.entry-row .er-date{font-weight:700;font-size:14px;}
+.entry-row .er-vehicle{font-size:12px;color:var(--muted);}
+.entry-row .er-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px;margin-bottom:8px;}
+.entry-row .er-grid .lbl{color:var(--muted);}
+.entry-row .er-actions{display:flex;justify-content:flex-end;gap:16px;}
+.entry-row .er-actions button{background:none;border:none;font-size:12px;font-weight:600;cursor:pointer;}
+.entry-row .er-actions .edt{color:var(--primary);}
+.entry-row .er-actions .del{color:var(--danger);}
+
+/* Buttons */
+.btn{padding:13px 18px;border-radius:12px;border:none;font-size:14.5px;font-weight:700;font-family:'Inter';cursor:pointer;}
+.btn.block{width:100%;}
+.btn.primary{background:var(--primary);color:#fff;}
+.btn.accent{background:var(--accent);color:#fff;}
+.btn.ghost{background:none;border:2px solid var(--border);color:var(--muted);}
+.btn.wa{background:#25D366;color:#fff;}
+
+.fab{
+  position:fixed;bottom:22px;right:calc(50% - 300px + 18px);
+  width:58px;height:58px;border-radius:50%;background:var(--accent);color:#fff;border:none;
+  font-size:28px;box-shadow:0 6px 18px rgba(255,159,28,0.4);display:flex;align-items:center;justify-content:center;
+}
+@media (max-width:620px){.fab{right:18px;}}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(20,24,40,0.55);display:none;align-items:flex-end;justify-content:center;z-index:100;}
+.overlay.show{display:flex;}
+.sheet{background:var(--surface);width:100%;max-width:600px;border-radius:20px 20px 0 0;padding:22px;max-height:88vh;overflow-y:auto;}
+.sheet h2{font-size:18px;margin:0 0 16px;}
+.fgroup{margin-bottom:14px;}
+.fgroup label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:6px;}
+.fgroup input,.fgroup select,.fgroup textarea{
+  width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14.5px;
+  font-family:'Inter';background:#FAFBFD;color:var(--text);
+}
+.fgroup textarea{resize:vertical;min-height:50px;}
+.frow{display:flex;gap:10px;}
+.frow .fgroup{flex:1;}
+.sheet-actions{display:flex;gap:10px;margin-top:8px;}
+.sheet-actions .btn{flex:1;}
+.payment-toggle{display:flex;gap:8px;margin-bottom:14px;}
+.payment-toggle button{flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:#FAFBFD;font-size:13px;font-weight:700;color:var(--muted);}
+.payment-toggle button.sel{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty-state .ic{font-size:36px;margin-bottom:10px;opacity:0.5;}
+
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:11px 20px;border-radius:24px;font-size:13.5px;font-weight:600;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;box-shadow:0 4px 14px rgba(0,0,0,0.2);}
+.toast.show{opacity:1;}
+
+#updateBanner{display:none;position:fixed;top:0;left:0;right:0;background:var(--success);color:#fff;text-align:center;padding:8px;font-size:12px;z-index:300;}
+
+.filter-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;}
+.filter-row button{
+  padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);
+  font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap;
+}
+.filter-row button.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.section-label{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;}
+</style>
+</head>
+<body>
+<div id="updateBanner">New version available — reloading…</div>
+
+<div id="lockScreen" class="hidden" style="position:fixed;inset:0;background:linear-gradient(135deg,#1E3A8A,#0F2050);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;color:#fff;">
+  <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+  <div style="font-size:19px;font-weight:800;font-family:'Poppins';margin-bottom:10px;" id="lockTitle">Subscription Renewal Pending</div>
+  <div style="font-size:14px;opacity:0.85;max-width:340px;line-height:1.6;" id="lockMessage">Your subscription has expired. Please contact support to renew and continue using the app.</div>
+</div>
+
+<div id="pinLockScreen" style="position:fixed;inset:0;background:linear-gradient(135deg,#1E3A8A,#12285f);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;color:#fff;">
+  <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px;">🔐</div>
+  <div style="font-family:'Poppins';font-size:18px;font-weight:700;margin-bottom:4px;" id="pinHeaderTitle">Enter App PIN</div>
+  <div style="font-size:13px;opacity:0.8;margin-bottom:22px;" id="pinHeaderCompany">Travel Tracker</div>
+  <div style="display:flex;gap:12px;margin-bottom:22px;" id="pinDotsRow">
+    <span class="pindot"></span><span class="pindot"></span><span class="pindot"></span><span class="pindot"></span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,68px);gap:12px;" id="pinKeypad">
+    <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+    <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+    <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+    <button class="pin-action" data-k="clear">Clear</button><button data-k="0">0</button><button class="pin-action" data-k="back">⌫</button>
+  </div>
+  <div style="color:#FF9F9F;font-size:13px;height:18px;margin-top:14px;" id="pinLockError"></div>
+</div>
+
+<style>
+.pindot{width:13px;height:13px;border-radius:50%;border:2px solid rgba(255,159,28,0.6);transition:all .15s;}
+.pindot.filled{background:var(--accent);border-color:var(--accent);}
+#pinKeypad button{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:20px;font-weight:700;font-family:'Inter';}
+#pinKeypad button.pin-action{background:none;border:none;font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);}
+#pinKeypad button:active{background:rgba(255,255,255,0.2);}
+</style>
+
+<div id="app">
+
+  <header>
+    <div class="top-row">
+      <div>
+        <h1 id="headerCompanyName">GNS CABS</h1>
+        <div class="sub" data-i18n="tagline">Travel &amp; Vehicle Tracker</div>
+      </div>
+      <button class="icon-btn" onclick="toggleLanguage()" style="margin-right:8px;font-size:12px;font-weight:700;" id="langToggleBtn">தமிழ்</button>
+      <button class="icon-btn" onclick="openConfigModal()">⚙️</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabNav">
+    <button class="active" data-tab="home"><span data-i18n="tabHome">🏠 Home</span></button>
+    <button data-tab="entries"><span data-i18n="tabEntries">📋 Entries</span></button>
+    <button data-tab="reports"><span data-i18n="tabReports">📊 Reports</span></button>
+    <button data-tab="vehicles"><span data-i18n="tabVehicles">🚗 Vehicles</span></button>
+    <button data-tab="drivers"><span data-i18n="tabDrivers">👤 Drivers</span></button>
+    <button data-tab="expenses"><span data-i18n="tabExpenses">🧾 Expenses</span></button>
+  </nav>
+
+  <main>
+
+    <!-- HOME TAB -->
+    <div id="tab-home" class="tab-panel">
+      <div id="subscriptionBanner" class="hidden" style="border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;font-weight:700;"></div>
+      <div class="stat-grid">
+        <div class="stat-box income"><div class="val" id="homeIncome">₹0</div><div class="lbl" data-i18n="lblIncome">This Month Income</div></div>
+        <div class="stat-box expense"><div class="val" id="homeExpense">₹0</div><div class="lbl" data-i18n="lblExpense">This Month Expense</div></div>
+        <div class="stat-box profit"><div class="val" id="homeProfit">₹0</div><div class="lbl" data-i18n="lblProfit">Net Profit</div></div>
+        <div class="stat-box km"><div class="val" id="homeKM">0</div><div class="lbl" data-i18n="lblKM">Total KM</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" data-i18n="quickActions">Quick Actions</div>
+        <button class="btn primary block" style="margin-bottom:10px;" onclick="openEntryModal()"><span data-i18n="addTripEntry">+ Add Today's Trip Entry</span></button>
+        <button class="btn wa block" onclick="shareMonthlyWhatsApp()"><span data-i18n="shareMonthly">📱 Share Monthly Summary (WhatsApp)</span></button>
+      </div>
+
+      <div class="section-label" data-i18n="recentEntries">Recent Entries</div>
+      <div id="homeRecentEntries"></div>
+    </div>
+
+    <!-- ENTRIES TAB -->
+    <div id="tab-entries" class="tab-panel hidden">
+      <div class="filter-row" id="entriesVehicleFilter"></div>
+      <div id="entriesList"></div>
+    </div>
+
+    <!-- REPORTS TAB -->
+    <div id="tab-reports" class="tab-panel hidden">
+      <div class="filter-row">
+        <button class="active" data-period="daily" onclick="setReportPeriod('daily')"><span data-i18n="daily">Daily</span></button>
+        <button data-period="weekly" onclick="setReportPeriod('weekly')"><span data-i18n="weekly">Weekly</span></button>
+        <button data-period="monthly" onclick="setReportPeriod('monthly')"><span data-i18n="monthly">Monthly</span></button>
+        <button data-period="vehicle" onclick="setReportPeriod('vehicle')"><span data-i18n="vehicleWise">Vehicle-wise</span></button>
+      </div>
+      <div id="reportContent"></div>
+      <button class="btn accent block" style="margin-top:14px;" onclick="shareReportWhatsApp()"><span data-i18n="shareReport">📱 Share This Report (WhatsApp)</span></button>
+    </div>
+
+    <!-- VEHICLES TAB -->
+    <div id="tab-vehicles" class="tab-panel hidden">
+      <div class="card">
+        <div class="card-title"><span data-i18n="vehiclesTitle">Vehicles</span> <span style="font-size:12px;color:var(--muted);" id="vehicleCount">0</span></div>
+        <div id="vehicleChipList" class="chip-list"></div>
+        <button class="add-chip-btn" style="margin-top:12px;" onclick="openVehicleModal()"><span data-i18n="addVehicle">+ Add Vehicle</span></button>
+      </div>
+    </div>
+
+    <!-- DRIVERS TAB -->
+    <div id="tab-drivers" class="tab-panel hidden">
+      <div class="card">
+        <div class="card-title"><span data-i18n="driversTitle">Drivers</span> <span style="font-size:12px;color:var(--muted);" id="driverCount">0</span></div>
+        <div id="driverChipList" class="chip-list"></div>
+        <button class="add-chip-btn" style="margin-top:12px;" onclick="openDriverModal()"><span data-i18n="addDriver">+ Add Driver</span></button>
+      </div>
+      <div class="card">
+        <div class="card-title" data-i18n="defaultCommission">Default Commission %</div>
+        <div class="fgroup" style="margin-bottom:0;">
+          <input type="number" id="defaultCommissionInput" value="20" min="0" max="100" onchange="updateDefaultCommission(this.value)">
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPENSES TAB -->
+    <div id="tab-expenses" class="tab-panel hidden">
+      <div class="card">
+        <div class="card-title"><span data-i18n="expenseCategoriesTitle">Expense Categories</span> <span style="font-size:12px;color:var(--muted);" id="expenseCatCount">0</span></div>
+        <div id="expenseCatChipList" class="chip-list"></div>
+        <button class="add-chip-btn" style="margin-top:12px;" onclick="openExpenseCatModal()"><span data-i18n="addCategory">+ Add Category</span></button>
+      </div>
+    </div>
+
+  </main>
+
+  <button class="fab" onclick="openEntryModal()">+</button>
+</div>
+
+<!-- Entry Modal -->
+<div class="overlay" id="entryModal">
+  <div class="sheet">
+    <h2 id="entryModalTitle">New Trip Entry</h2>
+    <div class="fgroup"><label>Date</label><input type="date" id="entryDate"></div>
+    <div class="frow">
+      <div class="fgroup"><label>Vehicle</label><select id="entryVehicle"></select></div>
+      <div class="fgroup"><label>Driver</label><select id="entryDriver"></select></div>
+    </div>
+    <div class="frow">
+      <div class="fgroup"><label>Start KM</label><input type="number" id="entryStartKM" oninput="calcDistance()"></div>
+      <div class="fgroup"><label>End KM</label><input type="number" id="entryEndKM" oninput="calcDistance()"></div>
+    </div>
+    <div class="fgroup"><label>Distance (auto)</label><input type="text" id="entryDistance" readonly style="background:#EEF2FF;font-weight:700;"></div>
+
+    <div class="fgroup"><label>Total Fare Collected (₹)</label><input type="number" id="entryFare" oninput="calcCommission()"></div>
+
+    <label style="font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.3px;">Payment Mode</label>
+    <div class="payment-toggle" id="paymentToggle">
+      <button data-mode="cash" class="sel" onclick="selectPayment('cash')">Cash</button>
+      <button data-mode="upi" onclick="selectPayment('upi')">UPI</button>
+      <button data-mode="credit" onclick="selectPayment('credit')">Credit</button>
+    </div>
+
+    <div class="frow">
+      <div class="fgroup"><label>Fuel Litres</label><input type="number" id="entryFuelLiters" oninput="calcFuel('liters')"></div>
+      <div class="fgroup"><label>Fuel Rate (₹/L)</label><input type="number" id="entryFuelRate" value="100" oninput="calcFuel('liters')"></div>
+    </div>
+    <div class="fgroup"><label>Fuel Amount (₹) — auto or edit manually</label><input type="number" id="entryFuelAmount" oninput="calcFuel('amount')"></div>
+
+    <div class="fgroup">
+      <label>Additional Expenses — Workshop, Toll, Water Wash etc.</label>
+      <div id="expenseItemsList"></div>
+      <button type="button" class="add-chip-btn" style="margin-top:8px;width:100%;" onclick="addExpenseItemRow()">+ Add Expense Item</button>
+      <div style="text-align:right;font-size:13px;font-weight:700;margin-top:8px;color:var(--muted);">Total: <span id="expenseItemsTotal">₹0</span></div>
+      <input type="hidden" id="entryOtherExpense" value="0">
+    </div>
+
+    <div class="frow">
+      <div class="fgroup"><label>Driver Commission %</label><input type="number" id="entryCommissionPct" value="20" oninput="calcCommission()"></div>
+      <div class="fgroup"><label>Commission Amount (₹) — auto or edit manually</label><input type="number" id="entryCommissionAmt" oninput="calcNetProfitFromManualCommission()"></div>
+    </div>
+
+    <div class="fgroup"><label>Net Profit (auto)</label><input type="text" id="entryNetProfit" readonly style="background:#E7F7F1;font-weight:800;color:var(--success);"></div>
+
+    <div class="fgroup"><label>Notes</label><textarea id="entryNotes" placeholder="Trip details, customer name etc."></textarea></div>
+
+    <div class="sheet-actions">
+      <button class="btn ghost" onclick="closeModal('entryModal')">Cancel</button>
+      <button class="btn primary" onclick="saveEntry()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- Expense Category Modal -->
+<div class="overlay" id="expenseCatModal">
+  <div class="sheet">
+    <h2 id="expenseCatModalTitle">Add Expense Category</h2>
+    <div class="fgroup"><label>Category Name</label><input id="expenseCatName" placeholder="e.g. Workshop, Petrol, Water Wash"></div>
+    <div class="sheet-actions">
+      <button class="btn ghost" onclick="closeModal('expenseCatModal')">Cancel</button>
+      <button class="btn primary" onclick="saveExpenseCategory()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Vehicle Modal -->
+<div class="overlay" id="vehicleModal">
+  <div class="sheet">
+    <h2 id="vehicleModalTitle">Add Vehicle</h2>
+    <div class="fgroup"><label>Vehicle Name/Model</label><input id="vehicleName" placeholder="e.g. Toyota Innova"></div>
+    <div class="fgroup"><label>Registration Number</label><input id="vehicleNumber" placeholder="e.g. TN48AZ6636"></div>
+    <div class="sheet-actions">
+      <button class="btn ghost" onclick="closeModal('vehicleModal')">Cancel</button>
+      <button class="btn primary" onclick="saveVehicle()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Driver Modal -->
+<div class="overlay" id="driverModal">
+  <div class="sheet">
+    <h2 id="driverModalTitle">Add Driver</h2>
+    <div class="fgroup"><label>Driver Name</label><input id="driverName" placeholder="e.g. Punithan A"></div>
+    <div class="fgroup"><label>Phone (optional)</label><input id="driverPhone" placeholder="e.g. 98765xxxxx"></div>
+    <div class="sheet-actions">
+      <button class="btn ghost" onclick="closeModal('driverModal')">Cancel</button>
+      <button class="btn primary" onclick="saveDriver()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Config Modal -->
+<div class="overlay" id="configModal">
+  <div class="sheet">
+    <h2>Business Settings</h2>
+    <div class="fgroup"><label>Company Name</label><input id="cfgCompanyName" placeholder="e.g. GNS CABS"></div>
+    <div class="fgroup"><label>Contact Phone</label><input id="cfgPhone" placeholder="e.g. 9677904988"></div>
+    <div class="fgroup"><label>Address</label><textarea id="cfgAddress" placeholder="Business address"></textarea></div>
+    <div class="fgroup"><label>Change App PIN (4 digits) — leave blank to keep current</label><input type="text" id="cfgNewPin" maxlength="4" inputmode="numeric" placeholder="e.g. 4321"></div>
+    <div class="sheet-actions">
+      <button class="btn ghost" onclick="closeModal('configModal')">Cancel</button>
+      <button class="btn primary" onclick="saveConfig()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, set, push, remove, update, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* ============ FIREBASE CONFIG - Set per customer ============ */
+const firebaseConfig = {
+  apiKey: "AIzaSyB7op2BjPuMasG0GWd8K_xJ67TWVxFgjNk",
+  databaseURL: "https://gns-cabs-tracker-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+/* =============================================================== */
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+const auth = getAuth(fbApp);
+const urlParams = new URLSearchParams(location.search);
+const demoId = (urlParams.get('id') || 'sample').replace(/[^a-zA-Z0-9_-]/g, '');
+const ROOT = "demoInstances/" + demoId;
+/* Admin control (license enable/disable, PIN reset) is managed remotely via the
+   TrackMyApp Master Control Panel, not from within this customer-facing app. */
+
+let resolveAuthReady;
+const authReadyPromise = new Promise((resolve)=>{ resolveAuthReady = resolve; });
+onAuthStateChanged(auth, (user)=>{ if(user) resolveAuthReady(); });
+signInAnonymously(auth).catch(err=> console.error('Auth error', err));
+
+let vehicles = {}, drivers = {}, entries = {}, config = {}, license = {active:true}, expenseCategories = {};
+let editingEntryId = null, editingVehicleId = null, editingDriverId = null, editingExpenseCatId = null;
+let currentExpenseItems = [];
+let currentPinHash = null;
+let pinBuffer = '';
+
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+let selectedPaymentMode = 'cash';
+let currentEntriesFilter = 'all';
+let currentReportPeriod = 'daily';
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+async function init(){
+  await authReadyPromise;
+  await seedDemoDataIfNeeded();
+  onValue(ref(db, ROOT+'/vehicles'), snap=>{ vehicles = snap.val()||{}; renderVehicles(); renderEntryDropdowns(); renderEntriesFilter(); });
+  onValue(ref(db, ROOT+'/drivers'), snap=>{ drivers = snap.val()||{}; renderDrivers(); renderEntryDropdowns(); });
+  onValue(ref(db, ROOT+'/entries'), snap=>{
+    entries = snap.val()||{};
+    renderHome(); renderEntries(); renderReports();
+    update(ref(db, ROOT+'/activity'), {totalEntries: Object.keys(entries).length});
+  });
+  onValue(ref(db, ROOT+'/config'), snap=>{
+    config = snap.val()||{};
+    if(config.companyName){
+      document.getElementById('headerCompanyName').textContent = config.companyName;
+      document.getElementById('pinHeaderCompany').textContent = config.companyName;
+    }
+    document.getElementById('defaultCommissionInput').value = config.defaultCommission || 20;
+    if(!config.pinHash){
+      sha256('1234').then(hash=> update(ref(db, ROOT+'/config'), {pinHash: hash}));
+    } else {
+      currentPinHash = config.pinHash;
+    }
+    checkPinLock();
+  });
+  onValue(ref(db, ROOT+'/license'), snap=>{
+    license = snap.val() || {active:true};
+    checkLicenseLock();
+  });
+  onValue(ref(db, ROOT+'/expenseCategories'), snap=>{
+    expenseCategories = snap.val() || {};
+    if(Object.keys(expenseCategories).length === 0){
+      const defaults = {ec1:{name:'Workshop'}, ec2:{name:'Petrol'}, ec3:{name:'Diesel'}, ec4:{name:'Water Wash'}, ec5:{name:'Toll'}};
+      set(ref(db, ROOT+'/expenseCategories'), defaults);
+    }
+    renderExpenseCategories();
+    renderHome();
+    renderEntries();
+  });
+}
+init();
+
+/* ---------- Language Toggle (EN / Tamil) ---------- */
+const translations = {
+  en: {
+    tagline: "Travel & Vehicle Tracker",
+    tabHome: "🏠 Home", tabEntries: "📋 Entries", tabReports: "📊 Reports",
+    tabVehicles: "🚗 Vehicles", tabDrivers: "👤 Drivers", tabExpenses: "🧾 Expenses",
+    lblIncome: "This Month Income", lblExpense: "This Month Expense",
+    lblProfit: "Net Profit", lblKM: "Total KM",
+    quickActions: "Quick Actions",
+    addTripEntry: "+ Add Today's Trip Entry",
+    shareMonthly: "📱 Share Monthly Summary (WhatsApp)",
+    recentEntries: "Recent Entries",
+    daily: "Daily", weekly: "Weekly", monthly: "Monthly", vehicleWise: "Vehicle-wise",
+    shareReport: "📱 Share This Report (WhatsApp)",
+    vehiclesTitle: "Vehicles", addVehicle: "+ Add Vehicle",
+    driversTitle: "Drivers", addDriver: "+ Add Driver",
+    defaultCommission: "Default Commission %",
+    expenseCategoriesTitle: "Expense Categories", addCategory: "+ Add Category"
+  },
+  ta: {
+    tagline: "பயண & வாகன கண்காணிப்பு",
+    tabHome: "🏠 முகப்பு", tabEntries: "📋 பதிவுகள்", tabReports: "📊 அறிக்கைகள்",
+    tabVehicles: "🚗 வாகனங்கள்", tabDrivers: "👤 ஓட்டுநர்கள்", tabExpenses: "🧾 செலவுகள்",
+    lblIncome: "இந்த மாத வருமானம்", lblExpense: "இந்த மாத செலவு",
+    lblProfit: "நிகர லாபம்", lblKM: "மொத்த கி.மீ",
+    quickActions: "விரைவு செயல்கள்",
+    addTripEntry: "+ இன்றைய பயண பதிவு சேர்க்க",
+    shareMonthly: "📱 மாத சுருக்கம் பகிர் (WhatsApp)",
+    recentEntries: "சமீபத்திய பதிவுகள்",
+    daily: "தினசரி", weekly: "வாராந்திர", monthly: "மாதாந்திர", vehicleWise: "வாகன வாரியாக",
+    shareReport: "📱 இந்த அறிக்கையை பகிர் (WhatsApp)",
+    vehiclesTitle: "வாகனங்கள்", addVehicle: "+ வாகனம் சேர்க்க",
+    driversTitle: "ஓட்டுநர்கள்", addDriver: "+ ஓட்டுநர் சேர்க்க",
+    defaultCommission: "இயல்பு கமிஷன் %",
+    expenseCategoriesTitle: "செலவு வகைகள்", addCategory: "+ வகை சேர்க்க"
+  }
+};
+let currentLang = localStorage.getItem('tt_lang') || 'en';
+function applyLanguage(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    const dict = translations[currentLang];
+    if(dict && dict[key]) el.textContent = dict[key];
+  });
+  const btn = document.getElementById('langToggleBtn');
+  if(btn) btn.textContent = currentLang === 'en' ? 'தமிழ்' : 'English';
+}
+window.toggleLanguage = function(){
+  currentLang = currentLang === 'en' ? 'ta' : 'en';
+  localStorage.setItem('tt_lang', currentLang);
+  applyLanguage();
+};
+applyLanguage();
+
+async function seedDemoDataIfNeeded(){
+  const snap = await get(ref(db, ROOT+'/config'));
+  if(snap.exists()) return; // already seeded for this id
+  const today = new Date().toISOString().slice(0,10);
+  await set(ref(db, ROOT+'/config'), {
+    companyName: 'Demo Travels',
+    phone: '9999999999',
+    address: 'Sample Address, Tamil Nadu',
+    defaultCommission: 20
+  });
+  await set(ref(db, ROOT+'/vehicles'), {
+    v1: {name:'Toyota Innova', number:'TN01AB1234'},
+    v2: {name:'Maruti Dzire', number:'TN01CD5678'}
+  });
+  await set(ref(db, ROOT+'/drivers'), {
+    d1: {name:'Sample Driver 1', phone:''},
+    d2: {name:'Sample Driver 2', phone:''}
+  });
+  await set(ref(db, ROOT+'/expenseCategories'), {
+    ec1:{name:'Workshop'}, ec2:{name:'Petrol'}, ec3:{name:'Diesel'}, ec4:{name:'Water Wash'}, ec5:{name:'Toll'}
+  });
+  await set(ref(db, ROOT+'/entries'), {
+    e1: {date: today, vehicleId:'v1', driverId:'d1', startKM:100, endKM:250, distance:150, fare:3500, paymentMode:'cash', fuelLiters:12, fuelRate:100, fuelAmount:1200, otherExpense:50, expenseItems:[{categoryId:'ec5', amount:50}], commissionPct:20, commissionAmt:700, netProfit:1550, notes:'Sample trip'}
+  });
+  await set(ref(db, ROOT+'/license'), {active:true});
+}
+
+/* ---------- License / Subscription Lock ---------- */
+function checkPinLock(){
+  if(sessionStorage.getItem('tt_pin_unlocked') === '1'){
+    document.getElementById('pinLockScreen').style.display = 'none';
+    update(ref(db, ROOT+'/activity'), {lastActive: new Date().toISOString()});
+  }
+}
+function updatePinDots(){
+  document.querySelectorAll('#pinDotsRow .pindot').forEach((d,i)=> d.classList.toggle('filled', i < pinBuffer.length));
+}
+document.getElementById('pinKeypad').addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button'); if(!btn) return;
+  const k = btn.dataset.k;
+  if(k === 'clear'){ pinBuffer=''; updatePinDots(); document.getElementById('pinLockError').textContent=''; return; }
+  if(k === 'back'){ pinBuffer = pinBuffer.slice(0,-1); updatePinDots(); return; }
+  if(pinBuffer.length >= 4) return;
+  pinBuffer += k;
+  updatePinDots();
+  if(pinBuffer.length === 4){
+    const hash = await sha256(pinBuffer);
+    if(currentPinHash && hash === currentPinHash){
+      document.getElementById('pinLockScreen').style.display = 'none';
+      sessionStorage.setItem('tt_pin_unlocked','1');
+      update(ref(db, ROOT+'/activity'), {lastActive: new Date().toISOString()});
+    } else {
+      document.getElementById('pinLockError').textContent = 'Wrong PIN';
+      pinBuffer=''; setTimeout(updatePinDots, 100);
+    }
+  }
+});
+
+function checkLicenseLock(){
+  const lockScreen = document.getElementById('lockScreen');
+  let locked = false;
+  let reason = '';
+  if(license.active === false){
+    locked = true;
+    reason = 'suspended';
+  } else if(license.expiryDate){
+    const today = new Date().toISOString().slice(0,10);
+    if(today > license.expiryDate){
+      locked = true;
+      reason = 'expired';
+    }
+  }
+  if(locked){
+    document.getElementById('lockTitle').textContent = 'Account Suspended';
+    document.getElementById('lockMessage').textContent = 'Your subscription needs renewal.';
+    lockScreen.classList.remove('hidden');
+  } else {
+    lockScreen.classList.add('hidden');
+  }
+  updateSubscriptionBanner();
+}
+function updateSubscriptionBanner(){
+  const banner = document.getElementById('subscriptionBanner');
+  if(!license.expiryDate){ banner.classList.add('hidden'); return; }
+  const days = Math.ceil((new Date(license.expiryDate) - new Date()) / 86400000);
+  if(days > 30){ banner.classList.add('hidden'); return; }
+  banner.classList.remove('hidden');
+  let bg, color = '#FFFFFF', text = days+' days left on your subscription';
+  if(days < 0){ bg = '#E63946'; text = 'Subscription expired '+Math.abs(days)+' days ago — please renew'; }
+  else if(days <= 7){ bg = '#E63946'; text = 'Only '+days+' days left — please renew soon'; }
+  else { bg = '#FF9F1C'; }
+  banner.style.background = bg;
+  banner.style.color = color;
+  banner.style.fontWeight = '800';
+  banner.textContent = '⏳ '+text;
+}
+
+/* ---------- Tabs ---------- */
+document.getElementById('tabNav').addEventListener('click', e=>{
+  const btn = e.target.closest('button'); if(!btn) return;
+  document.querySelectorAll('#tabNav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
+  document.getElementById('tab-'+btn.dataset.tab).classList.remove('hidden');
+});
+
+/* ---------- Helpers ---------- */
+function showToast(msg){
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1700);
+}
+window.closeModal = function(id){ document.getElementById(id).classList.remove('show'); };
+function fmt(n){ return '₹'+Math.round(n||0).toLocaleString('en-IN'); }
+
+/* ---------- Vehicles ---------- */
+function renderVehicles(){
+  const ids = Object.keys(vehicles);
+  document.getElementById('vehicleCount').textContent = ids.length;
+  const list = document.getElementById('vehicleChipList');
+  if(!ids.length){ list.innerHTML = '<div style="color:var(--muted);font-size:13px;">No vehicles yet. Tap + Add Vehicle.</div>'; return; }
+  list.innerHTML = ids.map(id=>{
+    const v = vehicles[id];
+    return `<div class="chip">🚗 ${v.name} — ${v.number}
+      <button onclick="editVehicle('${id}')">✏️</button>
+      <button class="del-x" onclick="deleteVehicle('${id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+window.openVehicleModal = function(){
+  editingVehicleId = null;
+  document.getElementById('vehicleModalTitle').textContent = 'Add Vehicle';
+  document.getElementById('vehicleName').value=''; document.getElementById('vehicleNumber').value='';
+  document.getElementById('vehicleModal').classList.add('show');
+};
+window.editVehicle = function(id){
+  editingVehicleId = id;
+  document.getElementById('vehicleModalTitle').textContent = 'Edit Vehicle';
+  document.getElementById('vehicleName').value = vehicles[id].name;
+  document.getElementById('vehicleNumber').value = vehicles[id].number;
+  document.getElementById('vehicleModal').classList.add('show');
+};
+window.saveVehicle = async function(){
+  const name = document.getElementById('vehicleName').value.trim();
+  const number = document.getElementById('vehicleNumber').value.trim();
+  if(!name || !number){ showToast('Enter vehicle name & number'); return; }
+  if(editingVehicleId){ await update(ref(db, ROOT+'/vehicles/'+editingVehicleId), {name, number}); }
+  else { await set(push(ref(db, ROOT+'/vehicles')), {name, number}); }
+  closeModal('vehicleModal'); showToast('Vehicle saved');
+};
+window.deleteVehicle = async function(id){
+  if(!confirm('Delete this vehicle?')) return;
+  await remove(ref(db, ROOT+'/vehicles/'+id)); showToast('Vehicle deleted');
+};
+
+/* ---------- Expense Categories ---------- */
+function renderExpenseCategories(){
+  const ids = Object.keys(expenseCategories);
+  document.getElementById('expenseCatCount').textContent = ids.length;
+  const list = document.getElementById('expenseCatChipList');
+  if(!ids.length){ list.innerHTML = '<div style="color:var(--muted);font-size:13px;">No categories yet.</div>'; return; }
+  list.innerHTML = ids.map(id=>{
+    const c = expenseCategories[id];
+    return `<div class="chip">🧾 ${c.name}
+      <button onclick="editExpenseCategory('${id}')">✏️</button>
+      <button class="del-x" onclick="deleteExpenseCategory('${id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+window.openExpenseCatModal = function(){
+  editingExpenseCatId = null;
+  document.getElementById('expenseCatModalTitle').textContent = 'Add Expense Category';
+  document.getElementById('expenseCatName').value = '';
+  document.getElementById('expenseCatModal').classList.add('show');
+};
+window.editExpenseCategory = function(id){
+  editingExpenseCatId = id;
+  document.getElementById('expenseCatModalTitle').textContent = 'Edit Expense Category';
+  document.getElementById('expenseCatName').value = expenseCategories[id].name;
+  document.getElementById('expenseCatModal').classList.add('show');
+};
+window.saveExpenseCategory = async function(){
+  const name = document.getElementById('expenseCatName').value.trim();
+  if(!name){ showToast('Enter category name'); return; }
+  if(editingExpenseCatId){ await update(ref(db, ROOT+'/expenseCategories/'+editingExpenseCatId), {name}); }
+  else { await set(push(ref(db, ROOT+'/expenseCategories')), {name}); }
+  closeModal('expenseCatModal'); showToast('Category saved');
+};
+window.deleteExpenseCategory = async function(id){
+  if(!confirm('Delete this category?')) return;
+  await remove(ref(db, ROOT+'/expenseCategories/'+id)); showToast('Category deleted');
+};
+
+/* ---------- Expense Items (within a trip entry) ---------- */
+function categoryOptionsHTML(selectedId){
+  return Object.keys(expenseCategories).map(id=>
+    `<option value="${id}" ${id===selectedId?'selected':''}>${expenseCategories[id].name}</option>`
+  ).join('') || '<option value="">No categories — add in Expenses tab</option>';
+}
+function recalcExpenseTotal(){
+  const total = currentExpenseItems.reduce((sum,i)=> sum + (parseFloat(i.amount)||0), 0);
+  document.getElementById('expenseItemsTotal').textContent = fmt(total);
+  document.getElementById('entryOtherExpense').value = total;
+  recalcNetProfit();
+}
+function renderExpenseItemsList(){
+  const container = document.getElementById('expenseItemsList');
+  if(!currentExpenseItems.length){
+    container.innerHTML = '<div style="color:var(--muted);font-size:12.5px;padding:6px 0;">No items added.</div>';
+  } else {
+    container.innerHTML = currentExpenseItems.map((item, idx)=>`
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+        <select style="flex:1.2;" onchange="updateExpenseItem(${idx}, 'categoryId', this.value)">${categoryOptionsHTML(item.categoryId)}</select>
+        <input type="number" placeholder="₹" value="${item.amount||''}" style="flex:0.8;padding:11px;border:1.5px solid var(--border);border-radius:10px;" oninput="updateExpenseItemAmount(${idx}, this.value)">
+        <button type="button" onclick="removeExpenseItem(${idx})" style="background:none;border:none;color:var(--danger);font-size:18px;">✕</button>
+      </div>
+    `).join('');
+  }
+  recalcExpenseTotal();
+}
+window.addExpenseItemRow = function(){
+  const firstCatId = Object.keys(expenseCategories)[0] || '';
+  currentExpenseItems.push({categoryId: firstCatId, amount: ''});
+  renderExpenseItemsList();
+};
+window.updateExpenseItem = function(idx, field, value){
+  currentExpenseItems[idx][field] = value;
+  recalcExpenseTotal();
+};
+window.updateExpenseItemAmount = function(idx, value){
+  currentExpenseItems[idx].amount = value;
+  recalcExpenseTotal();
+};
+window.removeExpenseItem = function(idx){
+  currentExpenseItems.splice(idx, 1);
+  renderExpenseItemsList();
+};
+
+/* ---------- Drivers ---------- */
+function renderDrivers(){
+  const ids = Object.keys(drivers);
+  document.getElementById('driverCount').textContent = ids.length;
+  const list = document.getElementById('driverChipList');
+  if(!ids.length){ list.innerHTML = '<div style="color:var(--muted);font-size:13px;">No drivers yet. Tap + Add Driver.</div>'; return; }
+  list.innerHTML = ids.map(id=>{
+    const d = drivers[id];
+    return `<div class="chip">👤 ${d.name}${d.phone? ' · '+d.phone:''}
+      <button onclick="editDriver('${id}')">✏️</button>
+      <button class="del-x" onclick="deleteDriver('${id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+window.openDriverModal = function(){
+  editingDriverId = null;
+  document.getElementById('driverModalTitle').textContent = 'Add Driver';
+  document.getElementById('driverName').value=''; document.getElementById('driverPhone').value='';
+  document.getElementById('driverModal').classList.add('show');
+};
+window.editDriver = function(id){
+  editingDriverId = id;
+  document.getElementById('driverModalTitle').textContent = 'Edit Driver';
+  document.getElementById('driverName').value = drivers[id].name;
+  document.getElementById('driverPhone').value = drivers[id].phone||'';
+  document.getElementById('driverModal').classList.add('show');
+};
+window.saveDriver = async function(){
+  const name = document.getElementById('driverName').value.trim();
+  const phone = document.getElementById('driverPhone').value.trim();
+  if(!name){ showToast('Enter driver name'); return; }
+  if(editingDriverId){ await update(ref(db, ROOT+'/drivers/'+editingDriverId), {name, phone}); }
+  else { await set(push(ref(db, ROOT+'/drivers')), {name, phone}); }
+  closeModal('driverModal'); showToast('Driver saved');
+};
+window.deleteDriver = async function(id){
+  if(!confirm('Delete this driver?')) return;
+  await remove(ref(db, ROOT+'/drivers/'+id)); showToast('Driver deleted');
+};
+window.updateDefaultCommission = async function(val){
+  await update(ref(db, ROOT+'/config'), {defaultCommission: Number(val)});
+  showToast('Default commission updated');
+};
+
+/* ---------- Entry Dropdowns ---------- */
+function renderEntryDropdowns(){
+  const vSel = document.getElementById('entryVehicle');
+  vSel.innerHTML = Object.keys(vehicles).map(id=>`<option value="${id}">${vehicles[id].name} — ${vehicles[id].number}</option>`).join('') || '<option value="">No vehicles</option>';
+  const dSel = document.getElementById('entryDriver');
+  dSel.innerHTML = Object.keys(drivers).map(id=>`<option value="${id}">${drivers[id].name}</option>`).join('') || '<option value="">No drivers</option>';
+}
+
+/* ---------- Entry Modal Logic ---------- */
+window.openEntryModal = function(){
+  editingEntryId = null;
+  document.getElementById('entryModalTitle').textContent = 'New Trip Entry';
+  document.getElementById('entryDate').value = todayStr();
+  document.getElementById('entryStartKM').value = '';
+  document.getElementById('entryEndKM').value = '';
+  document.getElementById('entryDistance').value = '';
+  document.getElementById('entryFare').value = '';
+  document.getElementById('entryFuelLiters').value = '';
+  document.getElementById('entryFuelRate').value = 100;
+  document.getElementById('entryFuelAmount').value = '';
+  document.getElementById('entryOtherExpense').value = 0;
+  document.getElementById('entryCommissionPct').value = config.defaultCommission || 20;
+  document.getElementById('entryCommissionAmt').value = '';
+  document.getElementById('entryNetProfit').value = '';
+  document.getElementById('entryNotes').value = '';
+  selectPayment('cash');
+  currentExpenseItems = [];
+  renderExpenseItemsList();
+  document.getElementById('entryModal').classList.add('show');
+};
+window.editEntry = function(id){
+  editingEntryId = id;
+  const e = entries[id];
+  document.getElementById('entryModalTitle').textContent = 'Edit Trip Entry';
+  document.getElementById('entryDate').value = e.date;
+  document.getElementById('entryVehicle').value = e.vehicleId;
+  document.getElementById('entryDriver').value = e.driverId;
+  document.getElementById('entryStartKM').value = e.startKM;
+  document.getElementById('entryEndKM').value = e.endKM;
+  document.getElementById('entryDistance').value = e.distance;
+  document.getElementById('entryFare').value = e.fare;
+  document.getElementById('entryFuelLiters').value = e.fuelLiters||'';
+  document.getElementById('entryFuelRate').value = e.fuelRate||100;
+  document.getElementById('entryFuelAmount').value = e.fuelAmount||'';
+  document.getElementById('entryOtherExpense').value = e.otherExpense||0;
+  document.getElementById('entryCommissionPct').value = e.commissionPct||20;
+  document.getElementById('entryCommissionAmt').value = e.commissionAmt||0;
+  document.getElementById('entryNetProfit').value = fmt(e.netProfit);
+  document.getElementById('entryNotes').value = e.notes||'';
+  selectPayment(e.paymentMode||'cash');
+  currentExpenseItems = e.expenseItems ? Object.values(e.expenseItems) : [];
+  renderExpenseItemsList();
+  document.getElementById('entryModal').classList.add('show');
+};
+window.calcDistance = function(){
+  const s = parseFloat(document.getElementById('entryStartKM').value)||0;
+  const en = parseFloat(document.getElementById('entryEndKM').value)||0;
+  const dist = Math.max(0, en - s);
+  document.getElementById('entryDistance').value = dist ? dist+' km' : '';
+};
+window.calcFuel = function(source){
+  const liters = parseFloat(document.getElementById('entryFuelLiters').value)||0;
+  const rate = parseFloat(document.getElementById('entryFuelRate').value)||0;
+  if(source === 'liters' && liters && rate){
+    document.getElementById('entryFuelAmount').value = (liters*rate).toFixed(0);
+  }
+  calcNetProfitFromManualCommission();
+};
+window.selectPayment = function(mode){
+  selectedPaymentMode = mode;
+  document.querySelectorAll('#paymentToggle button').forEach(b=> b.classList.toggle('sel', b.dataset.mode===mode));
+};
+window.calcCommission = function(){
+  const fare = parseFloat(document.getElementById('entryFare').value)||0;
+  const pct = parseFloat(document.getElementById('entryCommissionPct').value)||0;
+  const commission = fare * pct/100;
+  document.getElementById('entryCommissionAmt').value = commission.toFixed(0);
+  recalcNetProfit();
+};
+window.calcNetProfitFromManualCommission = function(){
+  recalcNetProfit();
+};
+function recalcNetProfit(){
+  const fare = parseFloat(document.getElementById('entryFare').value)||0;
+  const fuel = parseFloat(document.getElementById('entryFuelAmount').value)||0;
+  const other = parseFloat(document.getElementById('entryOtherExpense').value)||0;
+  const commission = parseFloat(document.getElementById('entryCommissionAmt').value)||0;
+  const profit = fare - fuel - other - commission;
+  document.getElementById('entryNetProfit').value = fmt(profit);
+}
+
+window.saveEntry = async function(){
+  const date = document.getElementById('entryDate').value;
+  const vehicleId = document.getElementById('entryVehicle').value;
+  const driverId = document.getElementById('entryDriver').value;
+  if(!date || !vehicleId){ showToast('Fill date & vehicle'); return; }
+  const startKM = parseFloat(document.getElementById('entryStartKM').value)||0;
+  const endKM = parseFloat(document.getElementById('entryEndKM').value)||0;
+  const fare = parseFloat(document.getElementById('entryFare').value)||0;
+  const fuelLiters = parseFloat(document.getElementById('entryFuelLiters').value)||0;
+  const fuelRate = parseFloat(document.getElementById('entryFuelRate').value)||0;
+  const fuelAmount = parseFloat(document.getElementById('entryFuelAmount').value)||0;
+  const otherExpense = parseFloat(document.getElementById('entryOtherExpense').value)||0;
+  const commissionPct = parseFloat(document.getElementById('entryCommissionPct').value)||0;
+  const commissionAmt = parseFloat(document.getElementById('entryCommissionAmt').value)||0;
+  const netProfit = fare - fuelAmount - otherExpense - commissionAmt;
+  const data = {
+    date, vehicleId, driverId, startKM, endKM, distance: Math.max(0,endKM-startKM),
+    fare, paymentMode: selectedPaymentMode, fuelLiters, fuelRate, fuelAmount, otherExpense,
+    expenseItems: currentExpenseItems.filter(i=>i.amount),
+    commissionPct, commissionAmt, netProfit, notes: document.getElementById('entryNotes').value.trim()
+  };
+  if(editingEntryId){ await update(ref(db, ROOT+'/entries/'+editingEntryId), data); }
+  else{ await set(push(ref(db, ROOT+'/entries')), data); }
+  closeModal('entryModal'); showToast('Entry saved');
+};
+window.deleteEntry = async function(id){
+  if(!confirm('Delete this entry?')) return;
+  await remove(ref(db, ROOT+'/entries/'+id)); showToast('Entry deleted');
+};
+
+/* ---------- Home Tab ---------- */
+function renderHome(){
+  const now = new Date();
+  const ym = now.toISOString().slice(0,7);
+  let income=0, expense=0, km=0;
+  Object.values(entries).forEach(e=>{
+    if(e.date && e.date.startsWith(ym)){
+      income += e.fare||0;
+      expense += (e.fuelAmount||0)+(e.otherExpense||0)+(e.commissionAmt||0);
+      km += e.distance||0;
+    }
+  });
+  document.getElementById('homeIncome').textContent = fmt(income);
+  document.getElementById('homeExpense').textContent = fmt(expense);
+  document.getElementById('homeProfit').textContent = fmt(income-expense);
+  document.getElementById('homeKM').textContent = km.toLocaleString('en-IN');
+
+  const sorted = Object.entries(entries).sort((a,b)=> (b[1].date||'').localeCompare(a[1].date||'')).slice(0,5);
+  const container = document.getElementById('homeRecentEntries');
+  if(!sorted.length){ container.innerHTML = '<div class="empty-state"><div class="ic">🚕</div>No entries yet. Tap + to add your first trip.</div>'; return; }
+  container.innerHTML = sorted.map(([id,e])=> entryRowHTML(id,e)).join('');
+}
+
+function entryRowHTML(id, e){
+  const v = vehicles[e.vehicleId] || {name:'—',number:''};
+  const d = drivers[e.driverId] || {name:'—'};
+  const expenseItemsHTML = (e.expenseItems && e.expenseItems.length) ? `
+    <div style="font-size:12.5px;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);">
+      ${e.expenseItems.map(item=>{
+        const catName = (expenseCategories[item.categoryId] && expenseCategories[item.categoryId].name) || 'Expense';
+        return `${catName}: ${fmt(item.amount)}`;
+      }).join(' &nbsp;·&nbsp; ')}
+    </div>` : '';
+  return `<div class="entry-row">
+    <div class="er-top">
+      <div><div class="er-date">${e.date}</div><div class="er-vehicle">${v.name} · ${v.number} · ${d.name}</div></div>
+      <div style="font-weight:800;color:var(--success);">${fmt(e.netProfit)}</div>
+    </div>
+    <div class="er-grid">
+      <div><span class="lbl">Fare:</span> ${fmt(e.fare)}</div>
+      <div><span class="lbl">KM:</span> ${e.distance||0}</div>
+      <div><span class="lbl">Fuel:</span> ${fmt(e.fuelAmount)}</div>
+      <div><span class="lbl">Commission:</span> ${fmt(e.commissionAmt)}</div>
+    </div>
+    ${expenseItemsHTML}
+    <div class="er-actions">
+      <button class="edt" onclick="editEntry('${id}')">Edit</button>
+      <button class="del" onclick="deleteEntry('${id}')">Delete</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- Entries Tab ---------- */
+function renderEntriesFilter(){
+  const container = document.getElementById('entriesVehicleFilter');
+  const ids = Object.keys(vehicles);
+  container.innerHTML = `<button class="${currentEntriesFilter==='all'?'active':''}" onclick="setEntriesFilter('all')">All</button>` +
+    ids.map(id=>`<button class="${currentEntriesFilter===id?'active':''}" onclick="setEntriesFilter('${id}')">${vehicles[id].number}</button>`).join('');
+}
+window.setEntriesFilter = function(id){ currentEntriesFilter = id; renderEntriesFilter(); renderEntries(); };
+function renderEntries(){
+  const container = document.getElementById('entriesList');
+  let list = Object.entries(entries);
+  if(currentEntriesFilter !== 'all') list = list.filter(([id,e])=> e.vehicleId === currentEntriesFilter);
+  list.sort((a,b)=> (b[1].date||'').localeCompare(a[1].date||''));
+  if(!list.length){ container.innerHTML = '<div class="empty-state"><div class="ic">📋</div>No entries found.</div>'; return; }
+  container.innerHTML = list.map(([id,e])=> entryRowHTML(id,e)).join('');
+}
+
+/* ---------- Reports Tab ---------- */
+window.setReportPeriod = function(p){
+  currentReportPeriod = p;
+  document.querySelectorAll('[data-period]').forEach(b=> b.classList.toggle('active', b.dataset.period===p));
+  renderReports();
+};
+function groupKey(dateStr, period){
+  const d = new Date(dateStr);
+  if(period==='daily') return dateStr;
+  if(period==='monthly') return dateStr.slice(0,7);
+  if(period==='weekly'){
+    const onejan = new Date(d.getFullYear(),0,1);
+    const week = Math.ceil((((d - onejan)/86400000) + onejan.getDay()+1)/7);
+    return d.getFullYear()+'-W'+week;
+  }
+  return dateStr;
+}
+function renderReports(){
+  const container = document.getElementById('reportContent');
+  if(currentReportPeriod === 'vehicle'){
+    const byVehicle = {};
+    Object.values(entries).forEach(e=>{
+      const key = e.vehicleId;
+      if(!byVehicle[key]) byVehicle[key] = {income:0,expense:0,km:0,trips:0};
+      byVehicle[key].income += e.fare||0;
+      byVehicle[key].expense += (e.fuelAmount||0)+(e.otherExpense||0)+(e.commissionAmt||0);
+      byVehicle[key].km += e.distance||0;
+      byVehicle[key].trips += 1;
+    });
+    const ids = Object.keys(byVehicle);
+    if(!ids.length){ container.innerHTML = '<div class="empty-state">No data yet.</div>'; return; }
+    container.innerHTML = ids.map(id=>{
+      const v = vehicles[id]||{name:'Unknown',number:''};
+      const s = byVehicle[id];
+      return `<div class="card">
+        <div class="card-title">${v.name} — ${v.number}</div>
+        <div class="er-grid" style="font-size:13.5px;">
+          <div><span class="lbl">Trips:</span> ${s.trips}</div>
+          <div><span class="lbl">KM:</span> ${s.km}</div>
+          <div><span class="lbl">Income:</span> ${fmt(s.income)}</div>
+          <div><span class="lbl">Expense:</span> ${fmt(s.expense)}</div>
+        </div>
+        <div style="margin-top:8px;font-weight:800;color:var(--success);">Net Profit: ${fmt(s.income-s.expense)}</div>
+      </div>`;
+    }).join('');
+    return;
+  }
+  const grouped = {};
+  Object.values(entries).forEach(e=>{
+    if(!e.date) return;
+    const key = groupKey(e.date, currentReportPeriod);
+    if(!grouped[key]) grouped[key] = {income:0,expense:0,km:0,trips:0};
+    grouped[key].income += e.fare||0;
+    grouped[key].expense += (e.fuelAmount||0)+(e.otherExpense||0)+(e.commissionAmt||0);
+    grouped[key].km += e.distance||0;
+    grouped[key].trips += 1;
+  });
+  const keys = Object.keys(grouped).sort().reverse();
+  if(!keys.length){ container.innerHTML = '<div class="empty-state">No data yet.</div>'; return; }
+  container.innerHTML = keys.map(key=>{
+    const s = grouped[key];
+    return `<div class="card">
+      <div class="card-title">${key}</div>
+      <div class="er-grid" style="font-size:13.5px;">
+        <div><span class="lbl">Trips:</span> ${s.trips}</div>
+        <div><span class="lbl">KM:</span> ${s.km}</div>
+        <div><span class="lbl">Income:</span> ${fmt(s.income)}</div>
+        <div><span class="lbl">Expense:</span> ${fmt(s.expense)}</div>
+      </div>
+      <div style="margin-top:8px;font-weight:800;color:var(--success);">Net Profit: ${fmt(s.income-s.expense)}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- WhatsApp Share ---------- */
+window.shareMonthlyWhatsApp = function(){
+  const now = new Date();
+  const ym = now.toISOString().slice(0,7);
+  let income=0, expense=0, km=0, trips=0;
+  Object.values(entries).forEach(e=>{
+    if(e.date && e.date.startsWith(ym)){
+      income += e.fare||0;
+      expense += (e.fuelAmount||0)+(e.otherExpense||0)+(e.commissionAmt||0);
+      km += e.distance||0; trips+=1;
+    }
+  });
+  const name = config.companyName || 'Travel Tracker';
+  const msg = `*${name} - Monthly Summary*\n${ym}\n\nTrips: ${trips}\nTotal KM: ${km}\nIncome: ${fmt(income)}\nExpense: ${fmt(expense)}\nNet Profit: ${fmt(income-expense)}\n\n_Sent via ${name} App_`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+};
+window.shareReportWhatsApp = function(){
+  const name = config.companyName || 'Travel Tracker';
+  const text = document.getElementById('reportContent').innerText;
+  const msg = `*${name} - ${currentReportPeriod.toUpperCase()} Report*\n\n${text}\n\n_Sent via ${name} App_`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+};
+
+/* ---------- Config Modal ---------- */
+window.openConfigModal = function(){
+  document.getElementById('cfgCompanyName').value = config.companyName || '';
+  document.getElementById('cfgPhone').value = config.phone || '';
+  document.getElementById('cfgAddress').value = config.address || '';
+  document.getElementById('cfgNewPin').value = '';
+  document.getElementById('configModal').classList.add('show');
+};
+window.saveConfig = async function(){
+  const data = {
+    companyName: document.getElementById('cfgCompanyName').value.trim(),
+    phone: document.getElementById('cfgPhone').value.trim(),
+    address: document.getElementById('cfgAddress').value.trim()
+  };
+  const newPin = document.getElementById('cfgNewPin').value.trim();
+  if(newPin){
+    if(!/^\d{4}$/.test(newPin)){ showToast('PIN must be exactly 4 digits'); return; }
+    data.pinHash = await sha256(newPin);
+  }
+  await update(ref(db, ROOT+'/config'), data);
+  closeModal('configModal'); showToast('Settings saved');
+};
+
+document.querySelectorAll('.overlay').forEach(o=> o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('show'); }));
+
+/* ---------- Service Worker ---------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=> navigator.serviceWorker.register('./sw.js'));
+}
+
+/* ---------- Auto-update check ---------- */
+const CURRENT_BUILD = document.querySelector('meta[name="app-build"]').content;
+async function checkForUpdate(){
+  try{
+    const res = await fetch('./index.html?ts='+Date.now(), {cache:'no-store'});
+    const html = await res.text();
+    const match = html.match(/<meta name="app-build" content="([^"]+)"/);
+    if(match && match[1] !== CURRENT_BUILD){
+      document.getElementById('updateBanner').style.display='block';
+      setTimeout(()=> location.reload(true), 2000);
+    }
+  }catch(e){}
+}
+setInterval(checkForUpdate, 15000);
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible') checkForUpdate();
+});
+window.addEventListener('focus', checkForUpdate);
+</script>
+</body>
+</html>
