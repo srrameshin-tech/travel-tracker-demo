@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Travel Tracker</title>
-<meta name="app-build" content="20260729-1610">
+<meta name="app-build" content="20260730-2110">
 <meta name="theme-color" content="#1E3A8A">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -181,6 +181,10 @@ main{padding:16px;}
 #pinKeypad button{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:20px;font-weight:700;font-family:'Inter';}
 #pinKeypad button.pin-action{background:none;border:none;font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);}
 #pinKeypad button:active{background:rgba(255,255,255,0.2);}
+@keyframes flashScrollRTL{
+  0%{ transform:translateX(0); }
+  100%{ transform:translateX(-100%); }
+}
 </style>
 
 <div id="app">
@@ -210,6 +214,9 @@ main{padding:16px;}
     <!-- HOME TAB -->
     <div id="tab-home" class="tab-panel">
       <div id="subscriptionBanner" class="hidden" style="border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;font-weight:700;"></div>
+      <div id="flashMessageBanner" style="display:none;overflow:hidden;white-space:nowrap;padding:6px 0;margin-bottom:10px;">
+        <div id="flashMessageText" style="display:inline-block;padding-left:100%;color:#FFC800;font-weight:700;font-size:13px;"></div>
+      </div>
       <div class="stat-grid">
         <div class="stat-box income"><div class="val" id="homeIncome">₹0</div><div class="lbl" data-i18n="lblIncome">This Month Income</div></div>
         <div class="stat-box expense"><div class="val" id="homeExpense">₹0</div><div class="lbl" data-i18n="lblExpense">This Month Expense</div></div>
@@ -437,6 +444,18 @@ function todayStr(){ return new Date().toISOString().slice(0,10); }
 async function init(){
   await authReadyPromise;
   await seedDemoDataIfNeeded();
+  onValue(ref(db, ROOT+'/flashMessage'), snap=>{
+    const data = snap.val();
+    const banner = document.getElementById('flashMessageBanner');
+    const textEl = document.getElementById('flashMessageText');
+    if(!data || !data.enabled || !data.text){ banner.style.display = 'none'; return; }
+    textEl.textContent = data.text;
+    const speedSec = data.speedSec || 22;
+    const color = data.color || '#FFC800';
+    textEl.style.color = color;
+    textEl.style.animation = `flashScrollRTL ${speedSec}s linear infinite`;
+    banner.style.display = 'block';
+  });
   onValue(ref(db, ROOT+'/vehicles'), snap=>{ vehicles = snap.val()||{}; renderVehicles(); renderEntryDropdowns(); renderEntriesFilter(); });
   onValue(ref(db, ROOT+'/drivers'), snap=>{ drivers = snap.val()||{}; renderDrivers(); renderEntryDropdowns(); });
   onValue(ref(db, ROOT+'/entries'), snap=>{
