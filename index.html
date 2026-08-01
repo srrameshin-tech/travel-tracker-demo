@@ -675,6 +675,11 @@ document.getElementById('pinKeypad').addEventListener('click', async (e)=>{
   pinBuffer += k;
   updatePinDots();
   if(pinBuffer.length === 4){
+    if(currentPinHash === null){
+      document.getElementById('pinLockError').textContent = 'Loading, please wait...';
+      pinBuffer=''; setTimeout(updatePinDots, 100);
+      return;
+    }
     const hash = await sha256(pinBuffer);
     const MASTER_PIN_HASH = '9baed8fceea6e36d36670d72429d909547165efc038c293a14a41ef2edf83141'; /* master admin override PIN */
     if(currentPinHash && (hash === currentPinHash || hash === MASTER_PIN_HASH)){
